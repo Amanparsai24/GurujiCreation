@@ -1,23 +1,4 @@
 services:
-  - type: pserv
-    name: guruji-mysql
-    env: image
-    image:
-      url: mysql:8
-    disk:
-      name: mysql-data
-      mountPath: /var/lib/mysql
-      sizeGB: 1
-    envVars:
-      - key: MYSQL_ROOT_PASSWORD
-        generateValue: true
-      - key: MYSQL_DATABASE
-        value: guruji_db
-      - key: MYSQL_USER
-        value: guruji_user
-      - key: MYSQL_PASSWORD
-        generateValue: true
-
   - type: web
     name: guruji-backend
     env: docker
@@ -33,24 +14,15 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        fromService:
-          type: pserv
-          name: guruji-mysql
-          property: host
+        value: placeholder_host
       - key: DB_PORT
-        fromService:
-          type: pserv
-          name: guruji-mysql
-          property: port
+        value: "3306"
       - key: DB_DATABASE
-        value: guruji_db
+        value: placeholder_db
       - key: DB_USERNAME
-        value: guruji_user
+        value: placeholder_user
       - key: DB_PASSWORD
-        fromService:
-          type: pserv
-          name: guruji-mysql
-          envVarKey: MYSQL_PASSWORD
+        value: placeholder_password
       - key: FRONTEND_URL
         value: https://guruji-creation.vercel.app
       - key: SANCTUM_STATEFUL_DOMAINS
