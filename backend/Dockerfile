@@ -34,6 +34,7 @@ RUN sed -i -e 's/html/html\/public/g' /etc/apache2/sites-available/000-default.c
 
 # Start script
 COPY start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
+RUN sed -i 's/\r$//' /usr/local/bin/start.sh && \
+    chmod +x /usr/local/bin/start.sh
 
 CMD ["/usr/local/bin/start.sh"]
