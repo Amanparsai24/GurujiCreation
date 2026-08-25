@@ -17,8 +17,8 @@ Route::prefix('auth')->group(function () {
 
 Route::get('/debug-error', function() {
     try {
-        \Illuminate\Support\Facades\DB::connection()->getPdo();
-        return response()->json(['status' => 'DB connected successfully!']);
+        $count = \App\Models\User::count();
+        return response()->json(['status' => 'DB connected and migrations are present. Users count: ' . $count]);
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
     }
