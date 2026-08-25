@@ -69,7 +69,7 @@ const AdminRegister = () => {
         </form>
         
         <p style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-          Already have an admin account? <Link to="/login" style={{ fontWeight: 600 }}>Sign In</Link>
+          Already have an admin account? <Link to="/admin/login" style={{ fontWeight: 600 }}>Sign In</Link>
         </p>
       </div>
     </div>

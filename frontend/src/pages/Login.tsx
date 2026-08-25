@@ -10,7 +10,10 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   
   const navigate = useNavigate();
+  const location = useLocation();
   const setAuth = useAuthStore(state => state.setAuth);
+
+  const isAdminRoute = location.pathname.includes('/admin');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,7 +81,7 @@ const Login = () => {
         </form>
         
         <p style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-          Don't have an account? <Link to="/register" style={{ fontWeight: 600 }}>Create one</Link>
+          Don't have an account? <Link to={isAdminRoute ? "/admin/register" : "/register"} style={{ fontWeight: 600 }}>Create one</Link>
         </p>
       </div>
     </div>
