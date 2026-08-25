@@ -17,8 +17,8 @@ Route::prefix('auth')->group(function () {
 
 Route::get('/debug-error', function() {
     try {
-        $count = \App\Models\User::count();
-        return response()->json(['status' => 'DB connected and migrations are present. Users count: ' . $count]);
+        $dbs = \Illuminate\Support\Facades\DB::select('SHOW DATABASES');
+        return response()->json(['status' => 'Connected!', 'databases' => $dbs]);
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
     }
