@@ -1,52 +1,37 @@
-FROM php:8.2-apache
+FROM php:8.2-cli-alpine
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    zip \
-    unzip \
-    git \
+# Install required packages
+RUN apk add --no-cache \
     curl \
+    git \
+    unzip \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    libzip-dev \
+    linux-headers \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql
-
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
-
-# Optimize Apache memory limits for Render 512MB free tier
-RUN echo "<IfModule mpm_prefork_module>\n\
-    StartServers          1\n\
-    MinSpareServers       1\n\
-    MaxSpareServers       3\n\
-    MaxRequestWorkers     10\n\
-    MaxConnectionsPerChild 100\n\
-</IfModule>" > /etc/apache2/mods-available/mpm_prefork.conf
-
-# Set PHP memory limit
-RUN echo "memory_limit = 128M" > /usr/local/etc/php/conf.d/memory-limit.ini
+    && docker-php-ext-install pdo pdo_mysql gd zip
 
 # Set working directory
-WORKDIR /var/www/html
+WORKDIR /app
 
-# Copy application files
+# Copy files
 COPY . .
 
-# Install Composer
+# Install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --no-dev --optimize-autoloader
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
-# Change Apache document root to public
-RUN sed -i -e 's/html/html\/public/g' /etc/apache2/sites-available/000-default.conf
+# Fix script line endings
+RUN sed -i 's/\r$//' start.sh && chmod +x start.sh
 
-# Start script
-COPY start.sh /usr/local/bin/start.sh
-RUN sed -i 's/\r$//' /usr/local/bin/start.sh && \
-    chmod +x /usr/local/bin/start.sh
+# Expose port
+EXPOSE 8000
 
-CMD ["/usr/local/bin/start.sh"]
+# Run
+CMD ["/app/start.sh"]

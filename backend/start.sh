@@ -1,4 +1,5 @@
 #!/bin/sh
+
 # Run migrations to setup database if real credentials are provided
 if [ "$DB_HOST" != "placeholder_host" ]; then
     php artisan migrate --force
@@ -11,5 +12,6 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# Start Apache in the foreground
-apache2-foreground
+# Start Laravel's built-in server (very low memory)
+PORT=${PORT:-10000}
+php artisan serve --host=0.0.0.0 --port=$PORT
