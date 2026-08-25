@@ -6,5 +6,10 @@ else
     echo "Skipping migrations because DB_HOST is placeholder_host"
 fi
 
+# Optimize Laravel to save memory
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
 # Start Apache in the foreground
 apache2-foreground

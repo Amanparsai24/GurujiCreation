@@ -15,6 +15,18 @@ RUN apt-get update && apt-get install -y \
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
+# Optimize Apache memory limits for Render 512MB free tier
+RUN echo "<IfModule mpm_prefork_module>\n\
+    StartServers          1\n\
+    MinSpareServers       1\n\
+    MaxSpareServers       3\n\
+    MaxRequestWorkers     10\n\
+    MaxConnectionsPerChild 100\n\
+</IfModule>" > /etc/apache2/mods-available/mpm_prefork.conf
+
+# Set PHP memory limit
+RUN echo "memory_limit = 128M" > /usr/local/etc/php/conf.d/memory-limit.ini
+
 # Set working directory
 WORKDIR /var/www/html
 
