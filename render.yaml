@@ -1,8 +1,9 @@
 services:
   - type: pserv
     name: guruji-mysql
-    env: docker
-    image: mysql:8
+    env: image
+    image:
+      url: mysql:8
     disk:
       name: mysql-data
       mountPath: /var/lib/mysql
