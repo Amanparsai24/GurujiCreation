@@ -24,6 +24,15 @@ Route::get('/debug-error', function() {
     }
 });
 
+Route::get('/seed', function() {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        return response()->json(['status' => 'Database Seeded Successfully! Products and categories created.']);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+});
+
 // Public Product, Category & Template Routes
 Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
 Route::apiResource('products', ProductController::class)->only(['index', 'show']);
