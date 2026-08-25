@@ -10,6 +10,7 @@ import Checkout from './pages/Checkout';
 import DesignBuilder from './pages/DesignBuilder';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminDesignViewer from './pages/AdminDesignViewer';
+import AdminRegister from './pages/AdminRegister';
 import TrackOrder from './pages/TrackOrder';
 import ContactUs from './pages/ContactUs';
 import VendorDashboard from './pages/VendorDashboard';
@@ -80,7 +81,7 @@ function AppContent() {
           
           {/* Admin Routes */}
           <Route path="/admin/login" element={<Login />} />
-          <Route path="/admin/register" element={<Register />} />
+          <Route path="/admin/register" element={<AdminRegister />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/design-viewer/:orderId" element={<AdminDesignViewer />} />
 
