@@ -20,11 +20,9 @@ services:
 
   - type: web
     name: guruji-backend
-    env: php
+    env: docker
     rootDir: backend
     plan: free
-    buildCommand: composer install --no-dev --optimize-autoloader
-    preDeployCommand: php artisan migrate --force
     envVars:
       - key: APP_KEY
         generateValue: true
