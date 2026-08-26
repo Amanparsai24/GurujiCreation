@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
-import api, { IMAGE_BASE_URL } from '../api/axios';
+import api from '../api/axios';
 import toast from 'react-hot-toast';
 
 const Checkout = () => {
@@ -90,7 +90,8 @@ const Checkout = () => {
 
       // Success!
       if (response.data.token && response.data.user) {
-        useAuthStore.getState().login(response.data.user, response.data.token);
+        const { token, user } = response.data;
+        useAuthStore.getState().setAuth(user, token);
       }
       
       clearCart();

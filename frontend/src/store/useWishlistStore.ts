@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import api from '../api/axios';
-import { Product } from '../types';
+import type { Product } from '../types';
 
 interface WishlistState {
   items: Product[];

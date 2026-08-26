@@ -162,6 +162,8 @@ const DesignBuilder = () => {
     } finally {
       setLoading(false);
     }
+  };
+
   const handleSaveDesignToAccount = async () => {
     if (!fabricCanvas) return;
     if (!product) {

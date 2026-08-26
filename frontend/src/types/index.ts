@@ -56,8 +56,8 @@ export interface Product {
 }
 
 export interface Design {
-  id: number;
-  user_id: number;
+  id?: number;
+  user_id?: number;
   product_id: number;
   canvas_data: any;
   preview_image_url?: string;

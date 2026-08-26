@@ -69,7 +69,7 @@ const MyOrders = () => {
               </div>
 
               <div style={{ display: 'grid', gap: '1rem' }}>
-                {order.items.map((item) => (
+                {order.items?.map((item) => (
                   <div key={item.id} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     <div style={{ width: '60px', height: '60px', borderRadius: '0.5rem', backgroundColor: 'var(--color-bg)', overflow: 'hidden' }}>
                       {item.product?.images?.[0] ? (

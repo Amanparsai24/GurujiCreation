@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Link, useNavigate } from 'react-router-dom';
-import api, { IMAGE_BASE_URL } from '../api/axios';
-import { Trash2, ShoppingCart } from 'lucide-react';
+import api from '../api/axios';
+import { ShoppingCart } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
 import toast from 'react-hot-toast';
 
