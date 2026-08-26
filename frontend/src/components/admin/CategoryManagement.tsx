@@ -8,6 +8,7 @@ const CategoryManagement = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form State
   const [name, setName] = useState('');
@@ -82,6 +83,7 @@ const CategoryManagement = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       const payload = { 
         name, 
@@ -101,9 +103,11 @@ const CategoryManagement = () => {
         toast.success('Category created successfully');
       }
       fetchCategories();
-      handleCloseModal();
+      setShowModal(false);
     } catch (error) {
       toast.error('Failed to save category');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -246,7 +250,9 @@ const CategoryManagement = () => {
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2rem' }}>
                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancel</button>
-                <button type="submit" className="btn btn-primary">{editingCategory ? 'Update' : 'Save'} Category</button>
+                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                  {isSubmitting ? 'Saving...' : (editingCategory ? 'Update Category' : 'Save Category')}
+                </button>
               </div>
             </form>
           </div>

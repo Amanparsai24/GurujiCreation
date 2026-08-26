@@ -9,6 +9,7 @@ const ProductManagement = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form State
   const [name, setName] = useState('');
@@ -113,6 +114,8 @@ const ProductManagement = () => {
       toast.error('Please select a category');
       return;
     }
+    
+    setIsSubmitting(true);
 
     try {
       const payload = { 
@@ -140,6 +143,8 @@ const ProductManagement = () => {
       handleCloseModal();
     } catch (error) {
       toast.error('Failed to save product');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -311,7 +316,9 @@ const ProductManagement = () => {
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2rem' }}>
                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancel</button>
-                <button type="submit" className="btn btn-primary">{editingProduct ? 'Update' : 'Save'} Product</button>
+                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                  {isSubmitting ? 'Saving...' : (editingProduct ? 'Update Product' : 'Save Product')}
+                </button>
               </div>
             </form>
           </div>

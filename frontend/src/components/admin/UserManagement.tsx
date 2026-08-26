@@ -12,6 +12,7 @@ const UserManagement = ({ roleFilter }: UserManagementProps) => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [newUser, setNewUser] = useState({ name: '', email: '', phone: '', password: '', role: roleFilter || 'customer' });
 
   useEffect(() => {
@@ -57,6 +58,7 @@ const UserManagement = ({ roleFilter }: UserManagementProps) => {
 
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       await api.post('/admin/users', newUser);
       toast.success('User added successfully');
@@ -66,6 +68,8 @@ const UserManagement = ({ roleFilter }: UserManagementProps) => {
     } catch (error: any) {
       console.error('Failed to add user', error);
       toast.error(error.response?.data?.message || 'Failed to add user');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -172,7 +176,9 @@ const UserManagement = ({ roleFilter }: UserManagementProps) => {
               
               <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
                 <button type="button" className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowAddModal(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Create User</button>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={isSubmitting}>
+                  {isSubmitting ? 'Creating...' : 'Create User'}
+                </button>
               </div>
             </form>
           </div>

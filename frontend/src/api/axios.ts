@@ -3,7 +3,7 @@ import axios from 'axios';
 export const IMAGE_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000/api').replace('/api', '');
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8200/api', // Use environment variable or fallback to local
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api', // Use environment variable or fallback to local
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
