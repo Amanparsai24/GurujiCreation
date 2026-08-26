@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useSettingsStore } from '../store/useSettingsStore';
 import { useNavigate, Link } from 'react-router-dom';
-import api from '../api/axios';
+import api, { IMAGE_BASE_URL } from '../api/axios';
 import ProductManagement from '../components/admin/ProductManagement';
 import CategoryManagement from '../components/admin/CategoryManagement';
 import UserManagement from '../components/admin/UserManagement';
@@ -266,7 +266,7 @@ const AdminDashboard = () => {
                   
                   <div style={{ textAlign: 'center', marginBottom: '1.5rem', maxHeight: '60vh', overflowY: 'auto' }}>
                     <img 
-                      src={selectedPaymentProof.payment_proof_url} 
+                      src={selectedPaymentProof.payment_proof_url?.startsWith('http') ? selectedPaymentProof.payment_proof_url : `${IMAGE_BASE_URL}${selectedPaymentProof.payment_proof_url}`} 
                       alt="Payment Proof" 
                       style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', border: '1px solid var(--color-border)' }} 
                     />
