@@ -7,6 +7,9 @@ else
     echo "Skipping migrations because DB_HOST is placeholder_host"
 fi
 
+# Create storage symlink if it doesn't exist
+php artisan storage:link || true
+
 # Optimize Laravel to save memory
 php artisan config:cache
 php artisan route:cache
