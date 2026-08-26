@@ -15,14 +15,15 @@ const Checkout = () => {
   const [guestName, setGuestName] = useState(user?.name || '');
   const [guestPhone, setGuestPhone] = useState(user?.phone || '');
   const [step, setStep] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [error, setError] = useState('');
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setLoading(true);
+    setIsUploading(true);
     const formData = new FormData();
     formData.append('file', file);
     formData.append('folder', 'payments');
@@ -36,7 +37,7 @@ const Checkout = () => {
       console.error(err);
       toast.error('Failed to upload screenshot. Please try again.');
     } finally {
-      setLoading(false);
+      setIsUploading(false);
     }
   };
 
@@ -78,6 +79,8 @@ const Checkout = () => {
         orderPayload.guest_phone = guestPhone;
       }
 
+      await api.post('/orders', orderPayload);
+
       // Success!
       clearCart();
       const phoneParam = guestPhone ? guestPhone : (useAuthStore.getState().user?.phone || '');
@@ -86,7 +89,7 @@ const Checkout = () => {
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to place order. Please try again.');
     } finally {
-      setLoading(false);
+      setIsPlacingOrder(false);
     }
   };
 
@@ -183,16 +186,28 @@ const Checkout = () => {
                     className="input-field" 
                     onChange={handleFileUpload}
                     required={!paymentProofUrl}
+                    disabled={isUploading}
                   />
-                  {paymentProofUrl && <span style={{ color: 'var(--color-success)', fontSize: '0.8rem', marginTop: '0.5rem', display: 'block' }}>Screenshot uploaded successfully!</span>}
+                  {isUploading && <span style={{ color: 'var(--color-primary)', fontSize: '0.8rem', marginTop: '0.5rem', display: 'block' }}>Uploading image... please wait.</span>}
+                  
+                  {paymentProofUrl && (
+                    <div style={{ marginTop: '1rem', border: '1px solid var(--color-border)', padding: '0.5rem', borderRadius: '8px', background: 'var(--color-surface)' }}>
+                      <span style={{ color: 'var(--color-success)', fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block', fontWeight: 'bold' }}>✓ Screenshot uploaded successfully</span>
+                      <img 
+                        src={paymentProofUrl.startsWith('http') ? paymentProofUrl : `http://localhost:8000${paymentProofUrl}`} 
+                        alt="Payment Proof Preview" 
+                        style={{ width: '100%', maxHeight: '250px', objectFit: 'contain', borderRadius: '4px' }} 
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
                   <button type="button" className="btn btn-secondary" style={{ flex: 1, padding: '1rem' }} onClick={() => setStep(1)}>
                     Back
                   </button>
-                  <button type="submit" className="btn btn-primary" style={{ flex: 2, padding: '1rem', fontSize: '1.1rem' }} disabled={loading || !paymentProofUrl}>
-                    {loading ? 'Processing...' : 'Confirm Order'}
+                  <button type="submit" className="btn btn-primary" style={{ flex: 2, padding: '1rem', fontSize: '1.1rem' }} disabled={isUploading || isPlacingOrder || !paymentProofUrl}>
+                    {isPlacingOrder ? 'Confirming Order...' : 'Confirm Order'}
                   </button>
                 </div>
               </div>
