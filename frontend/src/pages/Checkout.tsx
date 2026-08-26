@@ -12,8 +12,9 @@ const Checkout = () => {
 
   const [shippingAddress, setShippingAddress] = useState('');
   const [paymentProofUrl, setPaymentProofUrl] = useState('');
-  const [guestName, setGuestName] = useState(user?.name || '');
-  const [guestPhone, setGuestPhone] = useState(user?.phone || '');
+  const [guestName, setGuestName] = useState(user?.role === 'customer' ? user.name : '');
+  const [guestPhone, setGuestPhone] = useState(user?.role === 'customer' ? user.phone : '');
+  const [guestPassword, setGuestPassword] = useState('');
   const [step, setStep] = useState(1);
   const [isUploading, setIsUploading] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
@@ -65,27 +66,36 @@ const Checkout = () => {
           product_id: i.product.id,
           quantity: i.quantity,
           price: i.product.base_price,
-          design_id: i.design?.id
+          design_id: i.design?.id ? i.design.id : null,
+          local_design_data: !i.design?.id && i.design ? {
+            canvas_data: i.design.canvas_data,
+            preview_image_url: i.design.preview_image_url
+          } : null
         }))
       };
 
-      if (isAuthenticated) {
+      if (isAuthenticated && user?.role === 'customer') {
         // @ts-ignore
-        orderPayload.user_id = useAuthStore.getState().user?.id;
+        orderPayload.user_id = user?.id;
       } else {
         // @ts-ignore
         orderPayload.guest_name = guestName;
         // @ts-ignore
         orderPayload.guest_phone = guestPhone;
+        // @ts-ignore
+        orderPayload.guest_password = guestPassword;
       }
 
-      await api.post('/orders', orderPayload);
+      const response = await api.post('/orders', orderPayload);
 
       // Success!
+      if (response.data.token && response.data.user) {
+        useAuthStore.getState().login(response.data.user, response.data.token);
+      }
+      
       clearCart();
-      const phoneParam = guestPhone ? guestPhone : (useAuthStore.getState().user?.phone || '');
       toast.success('Order placed successfully!');
-      navigate(`/track-order${phoneParam ? `?phone=${phoneParam}` : ''}`);
+      navigate(`/my-orders`);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to place order. Please try again.');
     } finally {
@@ -133,6 +143,20 @@ const Checkout = () => {
                     onChange={(e) => setGuestPhone(e.target.value)}
                   />
                 </div>
+                {(!isAuthenticated || user?.role !== 'customer') && (
+                  <div className="input-group">
+                    <label className="input-label">Create Password (For your account)</label>
+                    <input 
+                      type="password" 
+                      className="input-field" 
+                      required
+                      minLength={6}
+                      value={guestPassword}
+                      onChange={(e) => setGuestPassword(e.target.value)}
+                      placeholder="Enter a secure password to view orders later"
+                    />
+                  </div>
+                )}
 
                 <div className="input-group">
                   <label className="input-label">Full Address</label>
@@ -178,8 +202,8 @@ const Checkout = () => {
                   </div>
                 </div>
 
-                <div className="input-group">
-                  <label className="input-label">Upload Payment Screenshot</label>
+                <div style={{ marginTop: '1.5rem' }}>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Upload Payment Screenshot</label>
                   <input 
                     type="file" 
                     accept="image/*"
@@ -192,12 +216,7 @@ const Checkout = () => {
                   
                   {paymentProofUrl && (
                     <div style={{ marginTop: '1rem', border: '1px solid var(--color-border)', padding: '0.5rem', borderRadius: '8px', background: 'var(--color-surface)' }}>
-                      <span style={{ color: 'var(--color-success)', fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block', fontWeight: 'bold' }}>✓ Screenshot uploaded successfully</span>
-                      <img 
-                        src={paymentProofUrl.startsWith('http') ? paymentProofUrl : `${IMAGE_BASE_URL}${paymentProofUrl}`} 
-                        alt="Payment Proof Preview" 
-                        style={{ width: '100%', maxHeight: '250px', objectFit: 'contain', borderRadius: '4px' }} 
-                      />
+                      <span style={{ color: 'var(--color-success)', fontSize: '0.9rem', display: 'block', fontWeight: 'bold' }}>✓ Screenshot uploaded successfully</span>
                     </div>
                   )}
                 </div>

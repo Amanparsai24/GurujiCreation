@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useReducer } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Canvas, IText, Rect, Circle, FabricImage, FabricObject } from 'fabric';
 import { useCartStore } from '../store/useCartStore';
+import { useAuthStore } from '../store/useAuthStore';
 import api from '../api/axios';
 import type { Product } from '../types';
 
@@ -21,8 +22,9 @@ const DesignBuilder = () => {
   const [loading, setLoading] = useState(false);
   const [templates, setTemplates] = useState<any[]>([]);
   
+  const { addItem } = useCartStore();
+  const { isAuthenticated, user } = useAuthStore();
   const navigate = useNavigate();
-  const addItem = useCartStore(state => state.addItem);
 
   useEffect(() => {
     if (productId) {
@@ -140,8 +142,6 @@ const DesignBuilder = () => {
       const previewImage = fabricCanvas.toDataURL({ format: 'png', quality: 0.8, multiplier: 1 });
       
       const design = {
-        id: Math.floor(Math.random() * 10000),
-        user_id: 1, 
         product_id: product.id,
         canvas_data: canvasJson,
         preview_image_url: previewImage,
@@ -156,6 +156,37 @@ const DesignBuilder = () => {
 
       toast.success("Design saved to cart!");
       navigate('/cart');
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to save design.");
+    } finally {
+      setLoading(false);
+    }
+  const handleSaveDesignToAccount = async () => {
+    if (!fabricCanvas) return;
+    if (!product) {
+      toast.error("Please select a product before saving.");
+      return;
+    }
+
+    if (!isAuthenticated || user?.role !== 'customer') {
+      toast.error("Please login to save your custom designs.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const canvasJson = JSON.stringify(fabricCanvas.toJSON());
+      const previewImage = fabricCanvas.toDataURL({ format: 'png', quality: 0.8, multiplier: 1 });
+      
+      await api.post('/designs', {
+        product_id: product.id,
+        canvas_data: canvasJson,
+        preview_image_url: previewImage
+      });
+
+      toast.success("Design saved to your account!");
+      navigate('/my-designs');
     } catch (err) {
       console.error(err);
       toast.error("Failed to save design.");
@@ -185,12 +216,21 @@ const DesignBuilder = () => {
         
           <div style={{ display: 'flex', gap: '1rem' }}>
           <button className="btn btn-secondary" onClick={() => fabricCanvas?.clear()}>Clear Canvas</button>
+          {isAuthenticated && user?.role === 'customer' && (
+            <button 
+              className="btn btn-secondary" 
+              onClick={handleSaveDesignToAccount}
+              disabled={loading || !product}
+            >
+              Save to My Designs
+            </button>
+          )}
           <button 
             className="btn btn-primary" 
             onClick={handleSaveAndAddToCart}
             disabled={loading || !product}
           >
-            {loading ? 'Saving...' : (product ? 'Save & Request Approval' : 'Select Product')}
+            {loading ? 'Processing...' : (product ? 'Add to Cart' : 'Select Product')}
           </button>
         </div>
       </div>

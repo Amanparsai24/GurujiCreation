@@ -52,6 +52,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // Customer Orders (View own orders)
     Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
     
+    // Wishlist
+    Route::get('wishlist', [\App\Http\Controllers\WishlistController::class, 'index']);
+    Route::post('wishlist', [\App\Http\Controllers\WishlistController::class, 'store']);
+    Route::delete('wishlist/{productId}', [\App\Http\Controllers\WishlistController::class, 'destroy']);
+    
+    // Custom Designs
+    Route::get('designs', [\App\Http\Controllers\DesignController::class, 'index']);
+    Route::post('designs', [\App\Http\Controllers\DesignController::class, 'store']);
+    
     // Notifications
     Route::get('notifications', [\App\Http\Controllers\NotificationController::class, 'index']);
     Route::put('notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);

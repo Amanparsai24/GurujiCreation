@@ -13,9 +13,13 @@ import AdminRegister from './pages/AdminRegister';
 import TrackOrder from './pages/TrackOrder';
 import ContactUs from './pages/ContactUs';
 import VendorDashboard from './pages/VendorDashboard';
+import MyOrders from './pages/MyOrders';
+import MyDesigns from './pages/MyDesigns';
+import Wishlist from './pages/Wishlist';
 import { useCartStore } from './store/useCartStore';
 import { useSettingsStore } from './store/useSettingsStore';
-import { ShoppingCart } from 'lucide-react';
+import { useAuthStore } from './store/useAuthStore';
+import { ShoppingCart, User, LogOut, Heart, Palette } from 'lucide-react';
 
 import Home from './pages/Home';
 
@@ -24,6 +28,7 @@ import { Toaster } from 'react-hot-toast';
 function AppContent() {
   const cartItemsCount = useCartStore(state => state.items.length);
   const { fetchSettings, siteLogo, whatsappNumber } = useSettingsStore();
+  const { isAuthenticated, user, logout } = useAuthStore();
   const location = useLocation();
 
   useEffect(() => {
@@ -62,6 +67,26 @@ function AppContent() {
                   </span>
                 )}
               </Link>
+              {isAuthenticated && user?.role === 'customer' ? (
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '1rem', marginLeft: '1rem', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '1rem' }}>
+                  <Link to="/wishlist" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Heart size={18} />
+                  </Link>
+                  <Link to="/my-designs" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Palette size={18} />
+                  </Link>
+                  <Link to="/my-orders" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <User size={18} />
+                    My Account
+                  </Link>
+                  <button onClick={() => { logout(); window.location.href = '/'; }} className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <LogOut size={14} />
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <Link to="/login" className="btn btn-secondary" style={{ padding: '0.5rem 1rem', marginLeft: '1rem' }}>Login</Link>
+              )}
             </div>
           </div>
         </nav>
@@ -76,6 +101,9 @@ function AppContent() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/track-order" element={<TrackOrder />} />
+          <Route path="/my-orders" element={<MyOrders />} />
+          <Route path="/my-designs" element={<MyDesigns />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/contact" element={<ContactUs />} />
           
           {/* Admin Routes */}
