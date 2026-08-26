@@ -18,13 +18,15 @@ class UploadController extends Controller
             $file = $request->file('file');
             $folder = $request->input('folder', 'uploads');
             
-            // Store the file publicly
-            $path = $file->store($folder, 'public');
+            // Upload directly to Cloudinary
+            $cloudinaryImage = $file->storeOnCloudinary($folder);
+            $secureUrl = $cloudinaryImage->getSecurePath();
+            $publicId = $cloudinaryImage->getPublicId();
             
             return response()->json([
                 'message' => 'File uploaded successfully',
-                'url' => Storage::url($path),
-                'path' => $path
+                'url' => $secureUrl,
+                'path' => $secureUrl // We use URL as path since it's cloud hosted
             ], 201);
         }
 
