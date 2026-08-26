@@ -26,10 +26,11 @@ Route::get('/debug-error', function() {
 
 Route::get('/seed', function() {
     try {
+        \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--force' => true]);
         \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
-        return response()->json(['status' => 'Database Seeded Successfully! Products and categories created.']);
+        return response()->json(['status' => 'Database Migrated Fresh and Seeded Successfully!']);
     } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
+        return response()->json(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
     }
 });
 
