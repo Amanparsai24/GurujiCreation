@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
-import api from '../api/axios';
+import api, { IMAGE_BASE_URL } from '../api/axios';
 import toast from 'react-hot-toast';
 
 const Checkout = () => {
@@ -194,7 +194,7 @@ const Checkout = () => {
                     <div style={{ marginTop: '1rem', border: '1px solid var(--color-border)', padding: '0.5rem', borderRadius: '8px', background: 'var(--color-surface)' }}>
                       <span style={{ color: 'var(--color-success)', fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block', fontWeight: 'bold' }}>✓ Screenshot uploaded successfully</span>
                       <img 
-                        src={paymentProofUrl.startsWith('http') ? paymentProofUrl : `http://localhost:8000${paymentProofUrl}`} 
+                        src={paymentProofUrl.startsWith('http') ? paymentProofUrl : `${IMAGE_BASE_URL}${paymentProofUrl}`} 
                         alt="Payment Proof Preview" 
                         style={{ width: '100%', maxHeight: '250px', objectFit: 'contain', borderRadius: '4px' }} 
                       />

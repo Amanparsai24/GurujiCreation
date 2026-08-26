@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '../../api/axios';
+import api, { IMAGE_BASE_URL } from '../../api/axios';
 import type { Category } from '../../types';
 import toast from 'react-hot-toast';
 
@@ -144,7 +144,7 @@ const CategoryManagement = () => {
               <tr key={category.id} style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
                 <td style={{ padding: '1rem' }}>
                   {category.image ? (
-                    <img src={`http://localhost:8000${category.image}`} alt={category.name} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '0.25rem' }} />
+                    <img src={`${IMAGE_BASE_URL}${category.image}`} alt={category.name} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '0.25rem' }} />
                   ) : (
                     <div style={{ width: '40px', height: '40px', background: 'var(--color-bg)', borderRadius: '0.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>No Img</div>
                   )}
@@ -239,7 +239,7 @@ const CategoryManagement = () => {
               <div className="input-group">
                 <label className="input-label">Category Image</label>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  {image && <img src={image.startsWith('http') ? image : `http://localhost:8000${image}`} alt="Preview" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '0.5rem', border: '1px solid var(--color-border)' }} />}
+                  {image && <img src={image.startsWith('http') ? image : `${IMAGE_BASE_URL}${image}`} alt="Preview" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '0.5rem', border: '1px solid var(--color-border)' }} />}
                   <input type="file" accept="image/*" className="input-field" style={{ padding: '0.4rem' }} onChange={handleImageUpload} />
                 </div>
               </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../api/axios';
+import api, { IMAGE_BASE_URL } from '../api/axios';
 import type { Category } from '../types';
 
 const Home = () => {
@@ -46,7 +46,7 @@ const Home = () => {
                 <div style={{ width: '100%', height: '200px', backgroundColor: 'var(--color-bg)' }}>
                   {cat.image ? (
                     <img 
-                      src={cat.image.startsWith('http') ? cat.image : `http://localhost:8000${cat.image}`} 
+                      src={cat.image.startsWith('http') ? cat.image : `${IMAGE_BASE_URL}${cat.image}`} 
                       alt={cat.name} 
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                     />
