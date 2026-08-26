@@ -11,7 +11,7 @@ class UploadController extends Controller
     {
         $request->validate([
             'file' => 'required|file|mimes:jpeg,jpg,png,webp,svg|max:5120', // Max 5MB
-            'folder' => 'nullable|string|in:designs,products,avatars,payments',
+            'folder' => 'nullable|string|in:designs,products,avatars,payments,categories',
         ]);
 
         if ($request->hasFile('file')) {
