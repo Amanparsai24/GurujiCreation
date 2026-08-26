@@ -48,13 +48,13 @@ class DatabaseSeeder extends Seeder
 
         // 2. Create Categories
         $categories = [
-            ['name' => 'Acrylic Boards', 'slug' => 'acrylic-boards'],
-            ['name' => 'CNC Work', 'slug' => 'cnc-work'],
-            ['name' => 'Name Plates', 'slug' => 'name-plates'],
-            ['name' => 'Key Chains', 'slug' => 'key-chains'],
-            ['name' => 'Frames', 'slug' => 'frames'],
-            ['name' => 'Photo Frames', 'slug' => 'photo-frames'],
-            ['name' => 'Custom Products', 'slug' => 'custom-products'],
+            ['name' => 'Acrylic Boards', 'slug' => 'acrylic-boards', 'is_featured' => true],
+            ['name' => 'CNC Work', 'slug' => 'cnc-work', 'is_featured' => true],
+            ['name' => 'Name Plates', 'slug' => 'name-plates', 'is_featured' => true],
+            ['name' => 'Key Chains', 'slug' => 'key-chains', 'is_featured' => true],
+            ['name' => 'Frames', 'slug' => 'frames', 'is_featured' => true],
+            ['name' => 'Photo Frames', 'slug' => 'photo-frames', 'is_featured' => true],
+            ['name' => 'Custom Products', 'slug' => 'custom-products', 'is_featured' => true],
         ];
 
         foreach ($categories as $catData) {
