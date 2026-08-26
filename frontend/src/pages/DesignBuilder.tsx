@@ -172,7 +172,7 @@ const DesignBuilder = () => {
     }
 
     if (!isAuthenticated || user?.role !== 'customer') {
-      toast.error("Please login to save your custom designs.");
+      useAuthStore.getState().openLoginModal();
       return;
     }
 

@@ -16,6 +16,7 @@ import VendorDashboard from './pages/VendorDashboard';
 import MyOrders from './pages/MyOrders';
 import MyDesigns from './pages/MyDesigns';
 import Wishlist from './pages/Wishlist';
+import LoginModal from './components/LoginModal';
 import { useCartStore } from './store/useCartStore';
 import { useSettingsStore } from './store/useSettingsStore';
 import { useAuthStore } from './store/useAuthStore';
@@ -28,7 +29,7 @@ import { Toaster } from 'react-hot-toast';
 function AppContent() {
   const cartItemsCount = useCartStore(state => state.items.length);
   const { fetchSettings, siteLogo, whatsappNumber } = useSettingsStore();
-  const { isAuthenticated, user, logout } = useAuthStore();
+  const { isAuthenticated, user, logout, openLoginModal } = useAuthStore();
   const location = useLocation();
 
   useEffect(() => {
@@ -85,7 +86,13 @@ function AppContent() {
                   </button>
                 </div>
               ) : (
-                <Link to="/login" className="btn btn-secondary" style={{ padding: '0.5rem 1rem', marginLeft: '1rem' }}>Login</Link>
+                <button 
+                  onClick={openLoginModal} 
+                  className="btn btn-secondary" 
+                  style={{ padding: '0.5rem 1rem', marginLeft: '1rem', cursor: 'pointer' }}
+                >
+                  Login
+                </button>
               )}
             </div>
           </div>
@@ -116,6 +123,8 @@ function AppContent() {
           <Route path="/vendor/dashboard" element={<VendorDashboard />} />
         </Routes>
       </main>
+
+      <LoginModal />
 
       {/* Floating WhatsApp Button */}
       {!isAdminRoute && (

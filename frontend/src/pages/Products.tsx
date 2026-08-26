@@ -69,8 +69,7 @@ const Products = () => {
                   <button 
                     onClick={() => {
                       if (!isAuthenticated || user?.role !== 'customer') {
-                        // Using navigate from react-router-dom, but I need to make sure it's imported
-                        window.location.href = '/login';
+                        useAuthStore.getState().openLoginModal();
                         return;
                       }
                       isWishlisted ? removeFromWishlist(product.id) : addToWishlist(product.id);

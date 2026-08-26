@@ -7,9 +7,12 @@ interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
+  isLoginModalOpen: boolean;
   setAuth: (user: User, token: string) => void;
   logout: () => void;
   fetchUser: () => Promise<void>;
+  openLoginModal: () => void;
+  closeLoginModal: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -18,6 +21,9 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isAuthenticated: false,
+      isLoginModalOpen: false,
+      openLoginModal: () => set({ isLoginModalOpen: true }),
+      closeLoginModal: () => set({ isLoginModalOpen: false }),
       setAuth: (user, token) => {
         localStorage.setItem('token', token);
         set({ user, token, isAuthenticated: true });

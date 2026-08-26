@@ -63,7 +63,7 @@ const ProductDetails = () => {
           <button 
             onClick={() => {
               if (!isAuthenticated || user?.role !== 'customer') {
-                navigate('/login');
+                useAuthStore.getState().openLoginModal();
                 return;
               }
               isInWishlist(product.id) ? removeFromWishlist(product.id) : addToWishlist(product.id);
