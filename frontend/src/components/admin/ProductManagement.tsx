@@ -188,7 +188,7 @@ const ProductManagement = () => {
                 <tr key={product.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                   <td style={{ padding: '1rem' }}>
                     {primaryImage ? (
-                      <img src={`${IMAGE_BASE_URL}${primaryImage}`} alt={product.name} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '0.25rem' }} />
+                      <img src={primaryImage.startsWith('http') ? primaryImage : `${IMAGE_BASE_URL}${primaryImage}`} alt={product.name} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '0.25rem' }} />
                     ) : (
                       <div style={{ width: '40px', height: '40px', background: 'var(--color-surface)', borderRadius: '0.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>No Img</div>
                     )}
@@ -302,7 +302,7 @@ const ProductManagement = () => {
                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
                   {images.map((img, index) => (
                     <div key={index} style={{ position: 'relative' }}>
-                      <img src={`${IMAGE_BASE_URL}${img.image_url}`} alt="Preview" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '0.5rem', border: img.is_primary ? '2px solid var(--color-primary)' : '1px solid var(--color-border)' }} />
+                      <img src={img.image_url.startsWith('http') ? img.image_url : `${IMAGE_BASE_URL}${img.image_url}`} alt="Preview" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '0.5rem', border: img.is_primary ? '2px solid var(--color-primary)' : '1px solid var(--color-border)' }} />
                       <button type="button" onClick={() => removeImage(index)} style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'var(--color-error)', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}>×</button>
                       {img.is_primary && <div style={{ position: 'absolute', bottom: '0', left: '0', right: '0', background: 'var(--color-primary)', color: 'white', fontSize: '10px', textAlign: 'center', padding: '2px', borderBottomLeftRadius: '0.4rem', borderBottomRightRadius: '0.4rem' }}>Primary</div>}
                     </div>

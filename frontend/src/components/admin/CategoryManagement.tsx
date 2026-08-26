@@ -148,7 +148,7 @@ const CategoryManagement = () => {
               <tr key={category.id} style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
                 <td style={{ padding: '1rem' }}>
                   {category.image ? (
-                    <img src={`${IMAGE_BASE_URL}${category.image}`} alt={category.name} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '0.25rem' }} />
+                    <img src={category.image.startsWith('http') ? category.image : `${IMAGE_BASE_URL}${category.image}`} alt={category.name} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '0.25rem' }} />
                   ) : (
                     <div style={{ width: '40px', height: '40px', background: 'var(--color-bg)', borderRadius: '0.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>No Img</div>
                   )}
