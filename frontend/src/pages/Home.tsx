@@ -41,7 +41,7 @@ const Home = () => {
         <div className="container">
           <h2 style={{ textAlign: 'center', marginBottom: '3rem', fontSize: '2.5rem' }}>Our Categories</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
-            {categories.filter(cat => cat.is_featured).map((cat) => (
+            {categories.map((cat) => (
               <div key={cat.id} className="glass-card hover-glow" style={{ textAlign: 'center', padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ width: '100%', height: '200px', backgroundColor: 'var(--color-bg)' }}>
                   {cat.image ? (
@@ -62,9 +62,9 @@ const Home = () => {
                 </div>
               </div>
             ))}
-            {categories.filter(cat => cat.is_featured).length === 0 && (
+            {categories.length === 0 && (
               <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--color-text-muted)' }}>
-                No featured categories yet. Admin needs to enable "Show on Homepage" for categories.
+                No categories found. Please add some categories from the admin panel.
               </div>
             )}
           </div>
