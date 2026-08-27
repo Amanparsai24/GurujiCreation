@@ -5,26 +5,26 @@ import { Link, useNavigate } from 'react-router-dom';
 import { IMAGE_BASE_URL } from '../api/axios';
 import { Trash2 } from 'lucide-react';
 
-const Wishlist = () => {
+const Wishlist = ({ isTab = false }: { isTab?: boolean }) => {
   const { isAuthenticated, user } = useAuthStore();
   const navigate = useNavigate();
   const { items, isLoading, fetchWishlist, removeFromWishlist } = useWishlistStore();
 
   useEffect(() => {
     if (!isAuthenticated || user?.role !== 'customer') {
-      navigate('/login');
+      if (!isTab) navigate('/login');
       return;
     }
     fetchWishlist();
-  }, [isAuthenticated, user, navigate, fetchWishlist]);
+  }, [isAuthenticated, user, navigate, fetchWishlist, isTab]);
 
   if (isLoading) {
-    return <div className="container" style={{ paddingTop: '4rem', textAlign: 'center' }}>Loading your wishlist...</div>;
+    return <div className={!isTab ? "container" : ""} style={!isTab ? { paddingTop: '4rem', textAlign: 'center' } : { textAlign: 'center', padding: '2rem' }}>Loading your wishlist...</div>;
   }
 
   return (
-    <div className="container animate-fade-in" style={{ paddingTop: '4rem', minHeight: '80vh' }}>
-      <h2 className="text-gradient" style={{ marginBottom: '2rem' }}>My Wishlist</h2>
+    <div className={!isTab ? "container animate-fade-in" : "animate-fade-in"} style={!isTab ? { paddingTop: '4rem', minHeight: '80vh' } : {}}>
+      {!isTab && <h2 className="text-gradient" style={{ marginBottom: '2rem' }}>My Wishlist</h2>}
       
       {items.length === 0 ? (
         <div className="glass-card" style={{ textAlign: 'center', padding: '3rem' }}>

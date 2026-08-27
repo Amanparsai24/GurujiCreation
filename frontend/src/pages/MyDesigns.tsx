@@ -6,7 +6,7 @@ import { ShoppingCart } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
 import toast from 'react-hot-toast';
 
-const MyDesigns = () => {
+const MyDesigns = ({ isTab = false }: { isTab?: boolean }) => {
   const { isAuthenticated, user } = useAuthStore();
   const navigate = useNavigate();
   const [designs, setDesigns] = useState<any[]>([]);
@@ -15,11 +15,11 @@ const MyDesigns = () => {
 
   useEffect(() => {
     if (!isAuthenticated || user?.role !== 'customer') {
-      navigate('/login');
+      if (!isTab) navigate('/login');
       return;
     }
     fetchDesigns();
-  }, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user, navigate, isTab]);
 
   const fetchDesigns = async () => {
     try {
@@ -44,12 +44,12 @@ const MyDesigns = () => {
   };
 
   if (loading) {
-    return <div className="container" style={{ paddingTop: '4rem', textAlign: 'center' }}>Loading your designs...</div>;
+    return <div className={!isTab ? "container" : ""} style={!isTab ? { paddingTop: '4rem', textAlign: 'center' } : { textAlign: 'center', padding: '2rem' }}>Loading your designs...</div>;
   }
 
   return (
-    <div className="container animate-fade-in" style={{ paddingTop: '4rem', minHeight: '80vh' }}>
-      <h2 className="text-gradient" style={{ marginBottom: '2rem' }}>My Custom Designs</h2>
+    <div className={!isTab ? "container animate-fade-in" : "animate-fade-in"} style={!isTab ? { paddingTop: '4rem', minHeight: '80vh' } : {}}>
+      {!isTab && <h2 className="text-gradient" style={{ marginBottom: '2rem' }}>My Custom Designs</h2>}
       
       {designs.length === 0 ? (
         <div className="glass-card" style={{ textAlign: 'center', padding: '3rem' }}>

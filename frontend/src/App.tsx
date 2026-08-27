@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import './index.css';
 import Login from './pages/Login';
@@ -13,9 +13,7 @@ import AdminRegister from './pages/AdminRegister';
 import TrackOrder from './pages/TrackOrder';
 import ContactUs from './pages/ContactUs';
 import VendorDashboard from './pages/VendorDashboard';
-import MyOrders from './pages/MyOrders';
-import MyDesigns from './pages/MyDesigns';
-import Wishlist from './pages/Wishlist';
+import UserDashboard from './pages/UserDashboard';
 import LoginModal from './components/LoginModal';
 import { useCartStore } from './store/useCartStore';
 import { useSettingsStore } from './store/useSettingsStore';
@@ -31,6 +29,7 @@ function AppContent() {
   const { fetchSettings, siteLogo, whatsappNumber } = useSettingsStore();
   const { isAuthenticated, user, logout, openLoginModal } = useAuthStore();
   const location = useLocation();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     fetchSettings();
@@ -69,21 +68,51 @@ function AppContent() {
                 )}
               </Link>
               {isAuthenticated && user?.role === 'customer' ? (
-                <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '1rem', marginLeft: '1rem', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '1rem' }}>
-                  <Link to="/wishlist" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <Heart size={18} />
-                  </Link>
-                  <Link to="/my-designs" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <Palette size={18} />
-                  </Link>
-                  <Link to="/my-orders" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div 
+                  style={{ position: 'relative', display: 'flex', alignItems: 'center', marginLeft: '1rem', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '1rem' }}
+                  onMouseEnter={() => setIsDropdownOpen(true)}
+                  onMouseLeave={() => setIsDropdownOpen(false)}
+                >
+                  <Link to="/account" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem' }}>
                     <User size={18} />
                     My Account
                   </Link>
-                  <button onClick={() => { logout(); window.location.href = '/'; }} className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <LogOut size={14} />
-                    Logout
-                  </button>
+
+                  {isDropdownOpen && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '100%',
+                      right: 0,
+                      backgroundColor: 'var(--color-bg)',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '0.5rem',
+                      padding: '0.5rem',
+                      minWidth: '200px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.5rem',
+                      zIndex: 100,
+                      boxShadow: 'var(--shadow-glow)'
+                    }}>
+                      <Link to="/account?tab=orders" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem', margin: 0 }}>
+                        <ShoppingCart size={16} /> My Orders
+                      </Link>
+                      <Link to="/account?tab=designs" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem', margin: 0 }}>
+                        <Palette size={16} /> My Designs
+                      </Link>
+                      <Link to="/account?tab=wishlist" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem', margin: 0 }}>
+                        <Heart size={16} /> Wishlist
+                      </Link>
+                      <div style={{ height: '1px', backgroundColor: 'var(--color-border)', margin: '0.25rem 0' }}></div>
+                      <button 
+                        onClick={() => { logout(); window.location.href = '/'; }} 
+                        className="nav-link" 
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem', margin: 0, background: 'none', border: 'none', textAlign: 'left', width: '100%', color: 'var(--color-error)' }}
+                      >
+                        <LogOut size={16} /> Logout
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <button 
@@ -108,9 +137,7 @@ function AppContent() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/track-order" element={<TrackOrder />} />
-          <Route path="/my-orders" element={<MyOrders />} />
-          <Route path="/my-designs" element={<MyDesigns />} />
-          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/account" element={<UserDashboard />} />
           <Route path="/contact" element={<ContactUs />} />
           
           {/* Admin Routes */}

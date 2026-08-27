@@ -175,9 +175,9 @@ const Checkout = () => {
                   type="button" 
                   className="btn btn-primary" 
                   style={{ width: '100%', padding: '1rem', fontSize: '1.1rem' }} 
-                  onClick={() => {
-                    if ((!isAuthenticated && (!guestName || !guestPhone)) || !shippingAddress) {
-                      setError("Please fill in all shipping details.");
+                  onClick={(e) => {
+                    const form = e.currentTarget.form;
+                    if (form && !form.reportValidity()) {
                       return;
                     }
                     setError("");

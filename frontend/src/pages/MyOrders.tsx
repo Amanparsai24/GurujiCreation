@@ -4,7 +4,7 @@ import api, { IMAGE_BASE_URL } from '../api/axios';
 import type { Order } from '../types';
 import { Link, useNavigate } from 'react-router-dom';
 
-const MyOrders = () => {
+const MyOrders = ({ isTab = false }: { isTab?: boolean }) => {
   const { isAuthenticated, user } = useAuthStore();
   const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
@@ -12,7 +12,8 @@ const MyOrders = () => {
 
   useEffect(() => {
     if (!isAuthenticated || user?.role !== 'customer') {
-      navigate('/login');
+      // If we are a tab, UserDashboard already handles redirect
+      if (!isTab) navigate('/login');
       return;
     }
 
@@ -28,15 +29,15 @@ const MyOrders = () => {
     };
 
     fetchOrders();
-  }, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user, navigate, isTab]);
 
   if (loading) {
-    return <div className="container" style={{ paddingTop: '4rem', textAlign: 'center' }}>Loading your orders...</div>;
+    return <div className={!isTab ? "container" : ""} style={!isTab ? { paddingTop: '4rem', textAlign: 'center' } : { textAlign: 'center', padding: '2rem' }}>Loading your orders...</div>;
   }
 
   return (
-    <div className="container animate-fade-in" style={{ paddingTop: '4rem', minHeight: '80vh' }}>
-      <h2 className="text-gradient" style={{ marginBottom: '2rem' }}>My Orders</h2>
+    <div className={!isTab ? "container animate-fade-in" : "animate-fade-in"} style={!isTab ? { paddingTop: '4rem', minHeight: '80vh' } : {}}>
+      {!isTab && <h2 className="text-gradient" style={{ marginBottom: '2rem' }}>My Orders</h2>}
       
       {orders.length === 0 ? (
         <div className="glass-card" style={{ textAlign: 'center', padding: '3rem' }}>
