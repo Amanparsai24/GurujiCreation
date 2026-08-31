@@ -4,7 +4,7 @@ import api from '../api/axios';
 import { useAuthStore } from '../store/useAuthStore';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,7 +21,7 @@ const Login = () => {
     setError('');
     
     try {
-      const response = await api.post('/auth/login', { email, password });
+      const response = await api.post('/auth/login', { phone, password });
       const user = response.data.user;
       setAuth(user, response.data.token);
       
@@ -52,14 +52,16 @@ const Login = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="input-group">
-            <label className="input-label" htmlFor="email">Email Address</label>
+            <label className="input-label" htmlFor="phone">Phone Number</label>
             <input 
-              id="email" 
-              type="email" 
+              id="phone" 
+              type="tel" 
               className="input-field" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
+              value={phone} 
+              onChange={(e) => setPhone(e.target.value)} 
               required 
+              disabled={loading}
+              placeholder="10-digit mobile number"
             />
           </div>
           

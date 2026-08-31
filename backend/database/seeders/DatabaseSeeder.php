@@ -17,32 +17,32 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Create Admin User
         User::firstOrCreate(
-            ['email' => 'admin@guruji.com'],
+            ['phone' => '9876543210'],
             [
                 'name' => 'Admin Owner',
                 'password' => Hash::make('password'),
                 'role' => 'admin',
-                'phone' => '9876543210'
+                'email' => 'admin@guruji.com'
             ]
         );
 
         // Create Vendors
         User::firstOrCreate(
-            ['email' => 'vendor1@guruji.com'],
+            ['phone' => '9876543211'],
             [
-                'name' => 'Acrylic Master Vendor',
+                'name' => 'Laser Cut Vendor 1',
                 'password' => Hash::make('password'),
                 'role' => 'vendor',
-                'phone' => '9876543211'
+                'email' => 'vendor1@guruji.com'
             ]
         );
         User::firstOrCreate(
-            ['email' => 'vendor2@guruji.com'],
+            ['phone' => '9876543212'],
             [
-                'name' => 'Wood Craft Vendor',
+                'name' => 'UV Print Vendor 2',
                 'password' => Hash::make('password'),
                 'role' => 'vendor',
-                'phone' => '9876543212'
+                'email' => 'vendor2@guruji.com'
             ]
         );
 

@@ -73,7 +73,6 @@ class OrderController extends Controller
                 $user = \App\Models\User::create([
                     'name' => $request->guest_name,
                     'phone' => $request->guest_phone,
-                    'email' => 'guest_' . time() . '@guruji.com',
                     'password' => \Illuminate\Support\Facades\Hash::make($request->guest_password),
                     'role' => 'customer'
                 ]);

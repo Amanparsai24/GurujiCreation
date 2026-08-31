@@ -5,7 +5,6 @@ import { useAuthStore } from '../store/useAuthStore';
 
 const AdminRegister = () => {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
@@ -21,7 +20,7 @@ const AdminRegister = () => {
     
     try {
       // Send the request with 'role' explicitly set to 'admin'
-      const response = await api.post('/auth/register', { name, email, password, phone, role: 'admin' });
+      const response = await api.post('/auth/register', { name, password, phone, role: 'admin' });
       setAuth(response.data.user, response.data.token);
       navigate('/admin/dashboard');
     } catch (err: any) {
@@ -47,20 +46,15 @@ const AdminRegister = () => {
             <label className="input-label" htmlFor="name">Admin Full Name</label>
             <input id="name" type="text" className="input-field" value={name} onChange={(e) => setName(e.target.value)} required />
           </div>
-
-          <div className="input-group">
-            <label className="input-label" htmlFor="email">Admin Email Address</label>
-            <input id="email" type="email" className="input-field" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          </div>
           
           <div className="input-group">
-            <label className="input-label" htmlFor="phone">Phone Number (Optional)</label>
-            <input id="phone" type="tel" className="input-field" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <label className="input-label" htmlFor="phone">Phone Number</label>
+            <input id="phone" type="tel" className="input-field" value={phone} onChange={(e) => setPhone(e.target.value)} required />
           </div>
 
           <div className="input-group">
             <label className="input-label" htmlFor="password">Password</label>
-            <input id="password" type="password" className="input-field" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} />
+            <input id="password" type="password" className="input-field" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
           </div>
           
           <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }} disabled={loading}>

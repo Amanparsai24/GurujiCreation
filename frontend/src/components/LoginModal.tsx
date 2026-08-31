@@ -8,7 +8,7 @@ const LoginModal = () => {
   const { isLoginModalOpen, closeLoginModal, setAuth } = useAuthStore();
   const [isRegister, setIsRegister] = useState(false);
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -23,12 +23,12 @@ const LoginModal = () => {
     try {
       if (isRegister) {
         // Register API call
-        const response = await api.post('/register', { name, email, password });
+        const response = await api.post('/register', { name, phone, password });
         setAuth(response.data.user, response.data.token);
         toast.success('Registration successful!');
       } else {
         // Login API call
-        const response = await api.post('/login', { email, password });
+        const response = await api.post('/login', { phone, password });
         setAuth(response.data.user, response.data.token);
         toast.success('Login successful!');
       }
@@ -112,15 +112,15 @@ const LoginModal = () => {
           )}
 
           <div className="input-group">
-            <label className="input-label">Email Address</label>
+            <label className="input-label">Phone Number</label>
             <input
-              type="email"
+              type="tel"
               className="input-field"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               required
               disabled={loading}
-              placeholder="you@example.com"
+              placeholder="10-digit mobile number"
             />
           </div>
 
