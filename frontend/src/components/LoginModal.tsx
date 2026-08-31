@@ -23,12 +23,12 @@ const LoginModal = () => {
     try {
       if (isRegister) {
         // Register API call
-        const response = await api.post('/register', { name, phone, password });
+        const response = await api.post('/auth/register', { name, phone, password });
         setAuth(response.data.user, response.data.token);
         toast.success('Registration successful!');
       } else {
         // Login API call
-        const response = await api.post('/login', { phone, password });
+        const response = await api.post('/auth/login', { phone, password });
         setAuth(response.data.user, response.data.token);
         toast.success('Login successful!');
       }
