@@ -74,7 +74,7 @@ const Checkout = () => {
         }))
       };
 
-      if (isAuthenticated && user?.role === 'customer') {
+      if (isAuthenticated && user?.id) {
         // @ts-ignore
         orderPayload.user_id = user?.id;
       } else {
