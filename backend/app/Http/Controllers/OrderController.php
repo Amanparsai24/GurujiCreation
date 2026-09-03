@@ -75,7 +75,8 @@ class OrderController extends Controller
                         'name' => $request->guest_name,
                         'phone' => $request->guest_phone,
                         'password' => \Illuminate\Support\Facades\Hash::make($request->guest_password),
-                        'role' => 'customer'
+                        'role' => 'customer',
+                        'email' => null
                     ]);
                 }
 
