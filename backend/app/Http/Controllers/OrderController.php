@@ -93,7 +93,7 @@ class OrderController extends Controller
         foreach ($request->items as $item) {
             $designId = $item['design_id'] ?? null;
             
-            if (empty($designId) && !empty($item['local_design_data']['canvas_data'])) {
+            if (empty($designId) && !empty($item['local_design_data']) && !empty($item['local_design_data']['canvas_data'])) {
                 $design = \App\Models\Design::create([
                     'user_id' => $userId,
                     'product_id' => $item['product_id'],
