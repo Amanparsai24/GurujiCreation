@@ -41,87 +41,96 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'user_id' => 'nullable|exists:users,id',
-            'guest_name' => 'required_without:user_id|string',
-            'guest_phone' => 'required_without:user_id|string',
-            'guest_password' => 'required_without:user_id|string|min:6',
-            'total_amount' => 'required|numeric',
-            'shipping_address' => 'required|string',
-            'payment_status' => 'required|string',
-            'payment_proof_url' => 'required|string',
-            'items' => 'required|array',
-            'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1',
-            'items.*.price' => 'required|numeric',
-        ]);
-
-        $userId = $request->user_id;
-        $token = null;
-        $user = null;
-
-        if (!$userId) {
-            $user = \App\Models\User::where('phone', $request->guest_phone)->first();
-
-            if ($user) {
-                // User exists, check password
-                if (!\Illuminate\Support\Facades\Hash::check($request->guest_password, $user->password)) {
-                    return response()->json(['message' => 'Account exists with this phone number. Incorrect password.'], 401);
-                }
-            } else {
-                // Create new user
-                $user = \App\Models\User::create([
-                    'name' => $request->guest_name,
-                    'phone' => $request->guest_phone,
-                    'password' => \Illuminate\Support\Facades\Hash::make($request->guest_password),
-                    'role' => 'customer'
-                ]);
-            }
-
-            $userId = $user->id;
-            $token = $user->createToken('auth_token')->plainTextToken;
-        }
-
-        $order = Order::create([
-            'user_id' => $userId,
-            'total_amount' => $request->total_amount,
-            'shipping_address' => $request->shipping_address,
-            'payment_status' => $request->payment_status,
-            'payment_proof_url' => $request->payment_proof_url
-        ]);
-
-        foreach ($request->items as $item) {
-            $designId = $item['design_id'] ?? null;
-            
-            if (empty($designId) && !empty($item['local_design_data']) && !empty($item['local_design_data']['canvas_data'])) {
-                $design = \App\Models\Design::create([
-                    'user_id' => $userId,
-                    'product_id' => $item['product_id'],
-                    'canvas_data' => $item['local_design_data']['canvas_data'],
-                    'preview_image_url' => $item['local_design_data']['preview_image_url'],
-                    'status' => 'pending'
-                ]);
-                $designId = $design->id;
-            }
-
-            $order->items()->create([
-                'product_id' => $item['product_id'],
-                'design_id' => $designId,
-                'quantity' => $item['quantity'],
-                'price' => $item['price'],
+        try {
+            $request->validate([
+                'user_id' => 'nullable|exists:users,id',
+                'guest_name' => 'required_without:user_id|string',
+                'guest_phone' => 'required_without:user_id|string',
+                'guest_password' => 'required_without:user_id|string|min:6',
+                'total_amount' => 'required|numeric',
+                'shipping_address' => 'required|string',
+                'payment_status' => 'required|string',
+                'payment_proof_url' => 'required|string',
+                'items' => 'required|array',
+                'items.*.product_id' => 'required|exists:products,id',
+                'items.*.quantity' => 'required|integer|min:1',
+                'items.*.price' => 'required|numeric',
             ]);
+
+            $userId = $request->user_id;
+            $token = null;
+            $user = null;
+
+            if (!$userId) {
+                $user = \App\Models\User::where('phone', $request->guest_phone)->first();
+
+                if ($user) {
+                    // User exists, check password
+                    if (!\Illuminate\Support\Facades\Hash::check($request->guest_password, $user->password)) {
+                        return response()->json(['message' => 'Account exists with this phone number. Incorrect password.'], 401);
+                    }
+                } else {
+                    // Create new user
+                    $user = \App\Models\User::create([
+                        'name' => $request->guest_name,
+                        'phone' => $request->guest_phone,
+                        'password' => \Illuminate\Support\Facades\Hash::make($request->guest_password),
+                        'role' => 'customer'
+                    ]);
+                }
+
+                $userId = $user->id;
+                $token = $user->createToken('auth_token')->plainTextToken;
+            }
+
+            $order = Order::create([
+                'user_id' => $userId,
+                'total_amount' => $request->total_amount,
+                'shipping_address' => $request->shipping_address,
+                'payment_status' => $request->payment_status,
+                'payment_proof_url' => $request->payment_proof_url
+            ]);
+
+            foreach ($request->items as $item) {
+                $designId = $item['design_id'] ?? null;
+                
+                if (empty($designId) && !empty($item['local_design_data']) && !empty($item['local_design_data']['canvas_data'])) {
+                    $design = \App\Models\Design::create([
+                        'user_id' => $userId,
+                        'product_id' => $item['product_id'],
+                        'canvas_data' => $item['local_design_data']['canvas_data'],
+                        'preview_image_url' => $item['local_design_data']['preview_image_url'],
+                        'status' => 'pending'
+                    ]);
+                    $designId = $design->id;
+                }
+
+                $order->items()->create([
+                    'product_id' => $item['product_id'],
+                    'design_id' => $designId,
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                ]);
+            }
+
+            $response = [
+                'order' => $order->load('items')
+            ];
+
+            if ($token && $user) {
+                $response['token'] = $token;
+                $response['user'] = $user;
+            }
+
+            return response()->json($response, 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Order creation error: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Error placing order: ' . $e->getMessage()
+            ], 500);
         }
-
-        $response = [
-            'order' => $order->load('items')
-        ];
-
-        if ($token && $user) {
-            $response['token'] = $token;
-            $response['user'] = $user;
-        }
-
-        return response()->json($response, 201);
     }
 
     /**
